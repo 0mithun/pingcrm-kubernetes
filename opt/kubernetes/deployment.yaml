@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pingcrm
+spec:
+  selector:
+    matchLabels:
+      app: pingcrm
+  template:
+    metadata:
+      # name: pingcrm
+      labels:
+        app: pingcrm
+    spec:
+      # initContainers:
+      #   - name: db-migrations
+      #     image: pingcrm-fpm:latest 
+      #     command:
+      #       - "echo"
+      #     args:
+      #       - "123"
+      containers:
+      - name: pingcrm-nginx
+        image: pingcrm-nginx
+        imagePullPolicy: IfNotPresent
+        ports:
+          - containerPort: 80
+      - name: pingcrm-fpm
+        image: pingcrm-fpm:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+          - containerPort: 9000
