@@ -12,6 +12,8 @@ FROM base as dev
 RUN apt update && apt install -y vim nodejs npm
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 
+# COPY . .
+
 # COPY /composer.json composer.json
 
 # RUN composer install

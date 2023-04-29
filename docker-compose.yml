@@ -6,13 +6,33 @@ services:
     volumes:
       - ./vhost.conf:/etc/nginx/conf.d/default.conf
       - .:/var/www/html
+      - ./public:/var/www/html/public/
 
     ports:
       - 8080:80
     depends_on:
+      node:
+        condition: service_started
       php:
         condition: service_started
-  
+  node:
+    image: node:12
+    working_dir: /code
+    entrypoint: make
+    command: node-assets
+    volumes:
+      - ./package.json:/code/package.json
+      - ./package-lock.json:/code/package-lock.json
+      - ./tailwind.config.js:/code/tailwind.config.js
+      - ./webpack.config.js:/code/webpack.config.js
+      - ./webpack.mix.js:/code/webpack.mix.js
+      - ./webpack.ssr.mix.js:/code/webpack.ssr.mix.js
+      - ./resources:/code/resources
+      - ./public:/code/public
+      - node_modules:/code/node_modules
+      - ./Makefile:/code/Makefile
+      # - /code/public
+    # command: npm ci && npm run watch
   php:
     build:
       context: .
@@ -41,3 +61,6 @@ services:
       MYSQL_USER: pingcrm
       MYSQL_PASSWORD: pingcrm
       MYSQL_DATABASE: pingcrm
+
+volumes:
+  node_modules:

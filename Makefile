@@ -8,8 +8,8 @@ setup:
 	php artisan key:generate
 	php artisan migrate
 	php artisan db:seed
-	npm ci
-	npm run dev
+	# npm ci
+	# npm run dev
 
 dbmig:
 	php artisan migrate:fresh
@@ -17,6 +17,10 @@ dbmig:
 
 test:
 	php artisan test
+
+node-assets:
+	npm install
+	npm run watch
 
 build-nginx:
 	docker image build -t pingcrm-nginx:latest --target nginx .
