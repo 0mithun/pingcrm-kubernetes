@@ -1,0 +1,23 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: pingcrm-fpm-schedule
+spec:
+  schedule: "* * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: pingcrm-fpm-schedule
+              image: pingcrm-fpm
+              imagePullPolicy: IfNotPresent
+              envFrom:
+                - configMapRef:
+                    name: pingcrm-fpm-configmap
+              command:
+                - "php"
+              args:
+                - "artisan" 
+                - "schedule:run" 
+          restartPolicy: OnFailure 

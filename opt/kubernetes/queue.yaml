@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pingcrm-queue
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: pingcrm-queue
+  template:
+    metadata:
+      # name: pingcrm
+      labels:
+        app: pingcrm-queue
+    spec:
+      volumes:
+        - name: logs
+          emptyDir: {}
+        - name: cache
+          emptyDir: {}
+        - name: sessions 
+          emptyDir: {}
+        - name: views
+          emptyDir: {}
+        - name: testing
+          emptyDir: {}
+      securityContext:
+        fsGroup: 33
+      containers:
+      - name: pingcrrm-pingcrm-queue
+        image: pingcrm-fpm:latest
+        imagePullPolicy: IfNotPresent
+        securityContext:
+          runAsUser: 33
+          runAsGroup: 33
+          # readOnlyRootFilesystem: true
+        volumeMounts:
+          - name: logs
+            mountPath: /var/www/html/storage/logs
+          - name: cache
+            mountPath: /var/www/html/storage/framework/cache
+          - name: sessions
+            mountPath:  /var/www/html/storage/framework/sessions
+          - name: views
+            mountPath: /var/www/html/storage/framework/views
+          - name: testing
+            mountPath: /var/www/html/storage/framework/testing
+        # resources: 
+        #   limits:
+        #     cpu: 500m
+        #     memory: 50M
+        ports:
+          - containerPort: 9000
+        envFrom:
+          - configMapRef:
+              name: pingcrm-fpm-configmap
+          - secretRef:
+              name: pingcrm-fpm-secret
+        command:
+          - "php"
+        args:
+          - "artisan"
+          - "queue:work"
