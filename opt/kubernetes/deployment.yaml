@@ -12,21 +12,68 @@ spec:
       labels:
         app: pingcrm
     spec:
-      # initContainers:
-      #   - name: db-migrations
-      #     image: pingcrm-fpm:latest 
-      #     command:
-      #       - "echo"
-      #     args:
-      #       - "123"
+      initContainers:
+        - name: db-migrations
+          image: pingcrm-fpm:latest 
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - configMapRef:
+                name: pingcrm-fpm-configmap
+          command:
+            - "php"
+          args:
+            - "artisan" 
+            - "migrate:fresh"
+            - "--seed" 
+      volumes:
+        - name: logs
+          emptyDir: {}
+        - name: cache
+          emptyDir: {}
+        - name: sessions 
+          emptyDir: {}
+        - name: views
+          emptyDir: {}
+        - name: testing
+          emptyDir: {}
+      securityContext:
+        fsGroup: 33
       containers:
       - name: pingcrm-nginx
         image: pingcrm-nginx
         imagePullPolicy: IfNotPresent
+        resources:
+          limits:
+            cpu: 500m
+            memory: 50M
         ports:
           - containerPort: 80
       - name: pingcrm-fpm
         image: pingcrm-fpm:latest
         imagePullPolicy: IfNotPresent
+        securityContext:
+          runAsUser: 33
+          runAsGroup: 33
+          # readOnlyRootFilesystem: true
+        volumeMounts:
+          - name: logs
+            mountPath: /var/www/html/storage/logs
+          - name: cache
+            mountPath: /var/www/html/storage/framework/cache
+          - name: sessions
+            mountPath:  /var/www/html/storage/framework/sessions
+          - name: views
+            mountPath: /var/www/html/storage/framework/views
+          - name: testing
+            mountPath: /var/www/html/storage/framework/testing
+        # resources: 
+        #   limits:
+        #     cpu: 500m
+        #     memory: 50M
         ports:
           - containerPort: 9000
+        envFrom:
+          - configMapRef:
+              name: pingcrm-fpm-configmap
+          - secretRef:
+              name: pingcrm-fpm-secret

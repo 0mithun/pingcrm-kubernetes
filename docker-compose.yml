@@ -56,6 +56,8 @@ services:
     healthcheck:
       test: ["CMD-SHELL", "bash", "-c", "echo > /dev/tcp/localhost/3306 "]
       interval: 1s
+    volumes:
+      - mariadb_data:/var/lib/mysql
     environment:
       MARIADB_ROOT_PASSWORD: password
       MYSQL_USER: pingcrm
@@ -64,3 +66,4 @@ services:
 
 volumes:
   node_modules:
+  mariadb_data:

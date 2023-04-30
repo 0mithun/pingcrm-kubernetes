@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mariadb
+spec:
+  selector:
+    matchLabels:
+      app: mariadb
+  template:
+    metadata:
+      labels:
+        app: mariadb
+    spec:
+      containers:
+        - name: mariadb
+          image: mariadb:10
+          env:
+          - name: MYSQL_USER
+            value: pingcrm
+          - name: MARIADB_ROOT_PASSWORD
+            value: pingcrm
+          - name: MYSQL_PASSWORD
+            value: pingcrm
+          - name: MYSQL_DATABASE
+            value: pingcrm
+          resources: {}
+          ports:
+            - containerPort: 3306
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mariadb
+spec:
+  selector:
+    app: mariadb
+  ports:
+  - port: 3306

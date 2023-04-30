@@ -2,7 +2,7 @@ FROM php:8.1-fpm as base
 
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
-RUN apt update && apt install -y zlib1g-dev libpng-dev zip unzip git
+RUN apt update && apt install -y zlib1g-dev libpng-dev zip unzip git procps
 
 RUN docker-php-ext-install exif gd pdo_mysql
 
@@ -21,16 +21,16 @@ COPY --from=composer /usr/bin/composer /usr/bin/composer
 FROM base as build-fpm
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 
-RUN groupadd -g 1000 www
-RUN useradd -u 1000 -ms /bin/bash -g www www
+# RUN groupadd -g 1000 www
+# RUN useradd -u 1000 -ms /bin/bash -g www www
 
 WORKDIR /var/www/html
 
 # COPY /composer.json composer.json
 COPY . .
-COPY --chown=www:www . /var/www/html
+# COPY --chown=www:www . /var/www/html
 
-USER www
+# USER www
 
 RUN composer install -o --no-dev
 # RUN ["bash", "-c", "cp .env.example .env"]

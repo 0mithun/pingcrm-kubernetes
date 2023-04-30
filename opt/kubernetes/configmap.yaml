@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pingcrm-fpm-configmap
+data:
+  APP_NAME: PingCRM
+  APP_ENV: local
+  # APP_KEY: base64:ThfMZdKIWsl3nmOFxYzLBLzl+xjEb06JiVV0+NfANOs=
+  APP_DEBUG: "true"
+  APP_URL: http://localhost:8080
+
+  LOG_CHANNEL: stderr
+  LOG_DEPRECATIONS_CHANNEL: "null"
+  LOG_LEVEL: debug
+
+  DB_CONNECTION: mysql
+  DB_HOST: mariadb 
+  DB_PORT: "3306"
+  DB_DATABASE: pingcrm
+  DB_USERNAME: pingcrm
+  DB_PASSWORD: pingcrm
+
+  BROADCAST_DRIVER: log
+  CACHE_DRIVER: file
+  FILESYSTEM_DRIVER: local
+  QUEUE_CONNECTION: sync
+  SESSION_DRIVER: file
+  SESSION_LIFETIME: "120"
+
+  MEMCACHED_HOST: 127.0.0.1
+
+  # REDIS_HOST: 127.0.0.1
+  # REDIS_PASSWORD: "null"
+  # REDIS_PORT: "6379"
+
+  # MAIL_MAILER: smtp
+  # MAIL_HOST: mailhog
+  # MAIL_PORT: "1025"
+  # MAIL_USERNAME: null
+  # MAIL_PASSWORD: null
+  # MAIL_ENCRYPTION: null
+  # MAIL_FROM_ADDRESS: null
+  # MAIL_FROM_NAME: "${APP_NAME}"
+
+
